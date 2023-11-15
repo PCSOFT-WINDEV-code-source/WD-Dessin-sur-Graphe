@@ -1,0 +1,142 @@
+#To edit and compare internal_properties, use WINDEV integrated tools.
+#Internal properties refer to the properties of controls in windows, reports, etc.
+info :
+ name : pDessinGraphe
+ major_version : 28
+ minor_version : 0
+ type : 7
+ description : ""
+ subtype : 0
+procedure_set :
+ identifier : 0x19d0db820006a9d9
+ internal_properties : CAAAAAgAAABGLu41kG7fjQV3iS4F72qmnKaNh5694reolNKIW0iw
+ code_elements :
+  type_code : 31
+  p_codes :
+   -
+     code : |1-
+      
+      public
+      
+      	CONSTANT
+      		MINMAX_ZONES	= 1
+      		MINMAX_LIGNES	= 2	
+      	FIN
+      
+      prive
+      	gtaObjetsGraphe est un tableau associatif de cDessinGraphe dynamique
+     type : 720896
+  procedures :
+   -
+     name : grActiveDessin
+     procedure_id : 1860228220835493092
+     type_code : 15
+     code : |1-
+      // Résumé : Active le dessin sur un champ graphe
+      // Syntaxe :
+      //[ <Résultat> = ] grActiveDessin (<ChampGraphe>, <nNbCategorie>)
+      //
+      // Paramètres :
+      //	ChampGraphe : Le champ graphe sur lequel activer le dessin
+      // 	nNbCategorie : Le nombre de catégories du graphes
+      // Valeur de retour :
+      // 	Type indéterminé : Objet de dessin associé au champ graphe ou Null en cas d'erreur
+      //
+      
+      Procédure publique grActiveDessin(ChampGraphe,nNbCategorie)
+      
+      	pclDessin est un cDessinGraphe dynamique
+      
+      	// Vérifie que le champ est bien un champ Graphe
+      	si pas ChampGraphe..Type = typGraphe alors renvoyer null
+      	
+      	selon grType(ChampGraphe)
+      		
+      		// Le dessin n'est pas possible sur les graphes 3D
+      		cas gr3DSAireEmpilé, gr3DSAireProfondeur, gr3DSCourbe, gr3DSHistoCylEmpilé, gr3DSHistoCylGroupé, gr3DSHistoCylProfondeur, gr3DSHistoEmpilé, gr3DSHistoGroupé, gr3DSHistoProfondeur, gr3DSMinMax, gr3DSNuage, gr3DSSecteur
+      			renvoyer null
+      
+      		// Le dessin n'est pas possible sur les graphes dépourvus d'axes
+      		cas grHémicycle, grSecteur, grDonut
+      			renvoyer null			
+      			
+      		// Le dessin n'est pas prévu pour les graphes suivants
+      		cas grNuage, grMinMax, grChandelier, grBarCharts		
+      			renvoyer null
+      		
+      		autre cas
+      			// On gère derrière
+      	FIN
+      
+      	// Vérifie si on a déjà activé le dessin sur ce graphe
+      	si gtaObjetsGraphe[ChampGraphe..Nomcomplet] = Null ALORS
+      				
+      		// Crée un objet de dessin pour le graphe
+      		pclDessin = allouer un cDessinGraphe(ChampGraphe..NomComplet,nNbCategorie)
+      		
+      		// Lance le dessin
+      		si pclDessin <> null ALORS
+      			pclDessin:Dessin()
+      		FIN
+      		
+      		// Affecte l'objet
+      		gtaObjetsGraphe[ChampGraphe..NomComplet] = pclDessin
+      	FIN
+      	
+      	// Récupère l'objet de dessin relié au champ graphe
+      	pclDessin = gtaObjetsGraphe[ChampGraphe..NomComplet]
+      	
+      // Renvoie l'objet
+      RENVOYER pclDessin
+     type : 458752
+   -
+     name : grDessine
+     internal_properties : CAAAAAgAAADvHda3NXD6IoFIHC9Z3EqRsBI6+qU8RSUbHqG1fQ7jKzme5VBGbgc5ZwVI6Y0xIzd/lZ2ec3AfyIvum2G1nTRhufKnSfaVRswr3o0xHZsG7EXN9hH1kJ22+6YYcYULWeaJjnsyXw18DzbHJwE68F+y6J7BwK5ErVqO8fWM9FWYaN4qV9G9oXaJHWFIXlw27r1b9Wvma8GhbdHJVhLaVgcGuOQaGQpOMhfEABbPbe3zjaBhZ1cKKMH3d6AV47QLKAAmSr9k1l7qxdL8+ru0krrd92C5VwafN+Y/E7mtRxFZz/X3IcAI9K2iYP5oZQU4i8NxqtrPfcdSjpvIen4pAaDmKYLabnCxw/+LcBLZkqpHtjfA2VVYGjup1d4rUb1tqlp6/g==
+     procedure_id : 1860229109893799774
+     type_code : 15
+     code : |1-
+      // Résumé : Dessine un graphe selon les paramètres spécifiés.
+      // Syntaxe :
+      //grDessine (<ChampGraphe>)
+      //
+      // Paramètres :
+      //	ChampGraphe : Nom du champ graphe
+      // Valeur de retour :
+      // 	Aucune
+      // Remarque : 
+      // La fonction grDessine prend en compte les nouveaux paramètres spécifiés depuis le dernier appel à cette même fonction.
+      //
+      // Traitement automatique des exceptions :   exécuter le bloc de code CAS EXCEPTION:
+      //
+      Procédure PUBLIQUE grDessine(ChampGraphe)
+      
+      	sChamp est une chaine
+      	
+      	// Récupère le nom du champ
+      	sChamp = MesParamètres[1]
+      	sChamp = {sChamp, indchamp}..nomcomplet
+      
+      	// Lance le dessin immédiat
+      	WL.grDessine(ChampGraphe)
+      
+      	// Vérifie si on a activé le dessin sur ce graphe
+      	SI gtaObjetsGraphe[sChamp] <> Null ALORS
+      		
+      		// Effectue le dessin
+      		gtaObjetsGraphe[sChamp]:Dessin(vrai)
+      	FIN
+      	
+      CAS EXCEPTION:
+      	retour
+     type : 458752
+  procedure_templates : []
+  property_templates : []
+ code_parameters :
+  internal_properties : CAAAAAgAAACVGQgYbalU7DKC3oH4ItDrjtcTHXXV/EuH8q0IbhyQlw==
+  original_name : COL_Collection1
+resources :
+ string_res :
+  identifier : 0x1fc4ce7608297067
+  internal_properties : CAAAAAgAAACm76HWfKGWp33VjXInA4cRlqArlgTTA862QGt72W2ld5Y=
+custom_note :
+ internal_properties : CAAAAAgAAABtB9HWVzrXO2+4NDRVK0vmzaNKrCKqH1DBX30lMmGZ

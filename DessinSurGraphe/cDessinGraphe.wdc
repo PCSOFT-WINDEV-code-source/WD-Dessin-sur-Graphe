@@ -1,0 +1,2042 @@
+#To edit and compare internal_properties, use WINDEV integrated tools.
+#Internal properties refer to the properties of controls in windows, reports, etc.
+info :
+ name : cDessinGraphe
+ major_version : 28
+ minor_version : 0
+ type : 4
+ description : ""
+ subtype : 0
+class :
+ identifier : 0x19d0dba5000b3343
+ internal_properties : CAAAAAgAAAB2/vstTMCJbS/hlxjFxirSqKvCUuv8YxgpWyl7S3iA
+ code_elements :
+  type_code : 10
+  p_codes :
+   -
+     internal_properties : CAAAAAgAAAAPG6fShv1rEyrTx99Hf/LkUKpQd3Vqm9P+HP8nElz5BaAgaxTxKZqOImWa0XKsW4gO6TaTNXnbxb9DzxCpAEeCpQse1e+I6/GXsL8i8tcMMAqnsQ+/vtm3kEpm1GZq3gGDxPEf/k09N0ZIDyNTbSURBxfZpmn7aRwC0tI8MZlkx2U1NYaH7Jkdf6JbzGYm0VyEPBa6x/XiQ9xHaEGpnuPhdjGdHGhTd7f+2vHRFdu38ljnsK/3GrZt4XaN23HzWpVl/AA=
+     code : |1-
+      
+      POINT est une structure
+      	x, y sont des entiers										// Coordonnées du point
+      FIN
+      
+      RECTANGLE est une structure
+      	x1, y1, x2, y2 sont des entiers								// Coordonnées du rectangle
+      FIN
+      
+      INFOPOINT est une structure
+      	Série, Catégorie 	sont des entiers						// Série et catégorie du point
+      	Point 				est un point							// Coordonnées du point
+      	Clé					est une chaine							// Clé du point
+      	Couleur 			est un entier 							// Couleur du point
+      	Epaisseur			est un entier							// Épaisseur
+      fIN
+      
+      SERIE est une structure
+      	Numéro 					est un entier						// Numéro de la série	
+      	Couleur 				est un entier						// Couleur de la série
+      	Epaisseur				est un entier						// Épaisseur de la série
+      	ValeurMin, ValeurMax 	sont des numériques					// Valeurs minimale et maximale de la série
+      	BorneMin, BorneMax 	 	sont des infopoint					// Bornes minimale et maximale de la série
+      	ValeurMoy				est un numérique					// Valeur moyenne de la série
+      	stMoyenne 				est un INFOPOINT					// Borne de la moyenne de la série
+      	Points 				 	est un tableau d'infopoint			// Liste des points du graphe
+      	PointMin, PointMax 	 	sont des POINT						// Autres points
+      	RayonMin, RayonMax		sont des reels						// Rayons mini et maxi (graphe radar)
+      	RayonMoy 				est un reel							// Rayons de la moyenne (graphe radar)
+      FIN
+      
+      DRAPEAU est une structure
+      	Série, Catégorie sont des entiers							// Série et catégorie du drapeau
+      	Symbole			 est une chaine								// Symbole du drapeau	
+      	Clé				 est une chaine								// Clé du drapeau
+      	Survol			 est un booléen								// Flag indiquant si le drapeau est survolé
+      	Enfoncé			 est un booléen								// Flag indiquant si le drapeau est enfoncé
+      	Hauteur			 est un entier								// Hauteur du drapeau
+      	Point			 est un point								// Coordonnées du drapeau
+      	Sens			 est un entier 								// Sens du drapeau (0 vers le haut, 1 vers le bas)
+      FIN
+      
+      ZONE est une structure
+      	Nom					est une chaine							// Nom de la zone
+      	Série			 	est un entier							// Série associée
+      	CatégorieDépart  	est un entier							// Catégorie de départ de la zone
+      	CatégorieArrivée 	est un entier							// Catégorie d'arrivée de la zone
+      	Couleur			 	est un entier							// Couleur de la zone
+      	PointMin, PointMax	sont des point							// Bornes d'affichage
+      	ValMin, ValMax 		sont des numeriques						// Valeurs des bornes d'affichage
+      	Survol			 	est un booléen							// Flag indiquant si la zone est survolée
+      	Polygone			est un tableau d'entier					// Polygone de la zone (graphe radar)
+      FIN
+      
+      cDessinGraphe est une classe
+      
+      	prive
+      		m_sChampGraphe				est une chaine				// Champ graphe associé au dessin
+      		m_bMinMaxActif				est un booléen				// Propriété DessinMinMaxActif
+      		m_bMoyenneActif				est un booléen				// Propriété DessinMoyenneActif
+      		m_bPlotActif				est un booléen				// Propriété DessinPlotActif
+      		m_bTrackerActif				est un booléen				// Propriété DessinTrackerActif
+      		m_sCallbackDrapeau			est une chaine				// Propriété CallbackDrapeau
+      		m_sCallbackSurvol			est une chaine				// Propriété CallbackSurvol
+      		m_sCallbackZone				est une chaine				// Propriété CallbackZone
+      		m_nStyleMinMax				est un entier				// Style du min/max
+      		m_tabSéries					est un tableau de serie		// Liste des séries du graphe		
+      		m_tabPoints					est un tableau de infopoint	// Liste des points du graphe		
+      		m_tabDrapeaux				est un tableau de drapeau	// Liste des drapeaux
+      		m_tabZones					est un tableau de Zone		// Liste des zones
+      		m_bRecalculNécessaire		est un booléen				// Flag indiquant si le calcul des points est nécessaire
+      		m_stRectangleGraphe			est un rectangle			// Rectangle du graphe
+      		m_stCentreGraphe			est un point				// Centre du graphe (graphe radar)
+      		m_stLastSerie				est une serie				// Dernière série
+      		m_stLastTracker				est un INFOPOINT			// Dernier tracker
+      		m_tabLastPoints				est un tableau de infopoint	// Derniers points survolés
+      		m_nTypeGraphe				est un entier				// Type du graphe		
+      		m_rRayonMin, m_rRayonMax	sont des reels				// Rayons mini et maxi (graphe radar)
+      		m_tabCouleursSéries			est un tableau d'entiers	// Couleurs par défaut des séries
+      		m_nOffsetY					est un entier				// Décalage Y dû au changement d'origine (grOrigine)
+      		m_nNbCategorie				est un entier				// Nombre de catégories
+      Fin
+      
+      EXTERNE "WINCONST.WL"
+     type : 131072
+  procedures :
+   -
+     name : Constructeur
+     internal_properties : CAAAAAgAAABYA3VRhWOK0aCLH7ZuEG9qWoypHWU2mfWlA/6GyLLFYRnX9bDeNjKBQo05DIirCKt8XVG75zGTP5MbeOVWXpxv1nCWVim200XurUPOfCjDsGNYQPN6ZCgR/sAmMxNhExFBLBD8uSFTS7vTReQXmzzpTZj8aXbTd9Z3y0HXH/1Sb0rI
+     procedure_id : 1860228147820901187
+     type_code : 27
+     code : |1-
+      // sChampGraphe : Le nom du champ graphe
+      // nNbCat : Le nombre de catégories du graphe
+      Procédure Constructeur(local sChampGraphe est une chaine, nNbCat)
+      
+      	m_nNbCategorie = nNbCat
+      
+      	SELON grType({sChampGraphe, indchamp})
+      	
+      		// Le dessin n'est pas possible sur les graphes 3D
+      		CAS gr3DSAireEmpilé, gr3DSAireProfondeur, gr3DSCourbe, gr3DSHistoCylEmpilé, gr3DSHistoCylGroupé, gr3DSHistoCylProfondeur, gr3DSHistoEmpilé, gr3DSHistoGroupé, gr3DSHistoProfondeur, gr3DSMinMax, gr3DSNuage, gr3DSSecteur
+      			libérer objet
+      			RETOUR
+      			
+      		// Le dessin n'est pas possible sur les graphes dépourvus d'axes
+      		CAS grHémicycle, grSecteur, grDonut
+      			libérer objet
+      			retour			
+      			
+      		// Le dessin n'est pas prévu pour les graphes suivants
+      		cas grNuage, grMinMax, grChandelier, grBarCharts
+      			libérer objet
+      			retour
+      		autres cas
+      	FIN
+      
+      	// Conserve le nom du graphe
+      	m_sChampGraphe = sChampGraphe
+      	
+      	// Valeurs par défaut
+      	StyleMinMax = MINMAX_LIGNES	
+      	m_bRecalculNécessaire = vrai
+      	
+      	// Gère l'événement de redimensionnement du graphe
+      	Evénement(On_WMSIZE, 			m_sChampGraphe, wm_size)
+      	
+      	// Gère le survol et le clic sur le graphe
+      	Evénement(On_WMMOUSEMOVE, 		m_sChampGraphe, WM_MOUSEMOVE)
+      	Evénement(On_WMLBUTTONUP, 		m_sChampGraphe, WM_LBUTTONUP)
+      	Evénement(On_WMLBUTTONDOWN, 	m_sChampGraphe, WM_LBUTTONDOWN)
+      	
+      	// Couleurs par défaut des séries
+      	ajoute(m_tabCouleursSéries, rvb(0xff, 0xd4, 0x40))
+      	ajoute(m_tabCouleursSéries, RVB(0xff, 0xbf, 0x69))
+      	ajoute(m_tabCouleursSéries, RVB(0xff, 0x9d, 0xc7))
+      	ajoute(m_tabCouleursSéries, RVB(0xd7, 0x9d, 0xf8))
+      	ajoute(m_tabCouleursSéries, RVB(0xb2, 0xa3, 0xff))
+      	ajoute(m_tabCouleursSéries, RVB(0x67, 0xaf, 0xe8))
+      	ajoute(m_tabCouleursSéries, RVB(0xb2, 0xa3, 0xff))
+      	ajoute(m_tabCouleursSéries, RVB(0x65, 0xc3, 0xe6))
+      	ajoute(m_tabCouleursSéries, RVB(0x5e, 0xd7, 0xcb))
+      	ajoute(m_tabCouleursSéries, RVB(0x88, 0xe3, 0x71))
+      	ajoute(m_tabCouleursSéries, RVB(0xb0, 0xe4, 0x33))
+      	ajoute(m_tabCouleursSéries, RVB(0xd8, 0xeb, 0x2b))
+      	
+      CAS EXCEPTION:
+      	libérer objet
+      	retour 
+     type : 589824
+   -
+     name : Destructeur
+     procedure_id : 1860228147820966723
+     type_code : 28
+     code : |1-
+      Procédure Destructeur()
+     type : 655360
+   -
+     name : Dessin
+     internal_properties : CAAAAAgAAAAGNuZIepJJqghSA4I93JfYuDRr6GrAQujF7qF5E8lAfD+KXFQhldFL/nZUxfWPpceRIpV21rHMm6YA5eCOkTK6B37RyRiZIxXcNN2dbYiLlmFGurSm9CbznhCblTP1NivtRl77YrRKtsrDBaEkxSoWt6PVW7sCMWrAFAIh1mO4un0dyW5pdEglyuhJkg5MC0MeJXp6U7O840lJQLrgQ2t445nlAC5ueKtM1sszhFZlTR2eZxKSsDrvMnsx6wlm3GCxFq1Ic6wobIQXNahqgL4ihHuKGvfOSC0N9JdBJYj44dV/EmPMvP64gDCbmATyXl4OKeU=
+     procedure_id : 1860229895872866609
+     type_code : 12
+     code : |1-
+      // Résumé : Met à jour le dessin associé au graphe
+      // Syntaxe :
+      //Dessin ( [<bReCalculNécessaire> est booléen])
+      //
+      // Paramètres :
+      // 	bReCalculNécessaire (booléen - valeur par défaut=Faux) : Vrai le calcul des points du graphe est nécessaire, Faux sinon
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure publique Dessin(bReCalculNécessaire est un booléen = faux)
+      
+      	stSérie 	est une serie
+      	
+      	stDrapeau	est un drapeau
+      	stZone		est une zone
+      	nIndice		est un entier
+      	stCercle	est un rectangle
+      	
+      	
+      	// Si le type du graphe a changé
+      	si grType({m_sChampGraphe, indchamp}) <> m_nTypeGraphe ALORS
+      	
+      		// Récupère le type du graphe
+      		m_nTypeGraphe =	grType({m_sChampGraphe, indChamp})
+      		
+      		// Et il faudra recalculer les coordonnées
+      		m_bRecalculNécessaire = vrai
+      	FIN
+      	
+      	si bReCalculNécessaire ALORS
+      		
+      		// Il faut recalculer les coordonnées
+      		m_bRecalculNécessaire = Vrai
+      	FIN
+      			
+      	// Si le calcul des points du graphe est nécessaire
+      	si m_bRecalculNécessaire alors
+      		
+      		// Recalcule les coordonnées de tous les points
+      		RecalculeCoordonnées({m_sChampGraphe, indchamp})
+      	fin
+      	
+      	// Démarre le dessin
+      	dDébutDessin(m_sChampGraphe, dSurGraphe)
+      	
+      	// Si le dessin de la moyenne est actif
+      	si DessinMoyenneActif alors
+      		
+      		// Dessin de la borne minimale/maximale
+      		POUR CHAQUE stSérie DE m_tabSéries
+      		
+      			dStylo(stSérie:Couleur, 1, stSérie:Epaisseur)
+      			dFond(Transparent, 0)
+      			
+      			SI m_nTypeGraphe = grRadar ALORS
+      				
+      				// Rectangle du cercle maxi
+      				stCercle:x1 = m_stCentreGraphe:x - stSérie:RayonMoy
+      				stCercle:x2 = m_stCentreGraphe:x + stSérie:RayonMoy						
+      				stCercle:y1 = m_stCentreGraphe:y - stSérie:RayonMoy
+      				stCercle:y2 = m_stCentreGraphe:y + stSérie:RayonMoy
+      				
+      				// Dessin du cercle moyen
+      				dCercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2)
+      			SINON
+      				
+      				// Ligne moyenne
+      				dLigne(m_stRectangleGraphe:x1 + 1, stSérie:stMoyenne:Point:y, m_stRectangleGraphe:x2, stSérie:stMoyenne:Point:y)							
+      			FIN
+      		fin
+      	FIN
+      	
+      	// Si le dessin du MIN/MAX est actif
+      	si DessinMinMaxActif ALORS
+      		
+      		// Dessin de la borne minimale/maximale
+      		pour chaque stSérie de m_tabseries
+      			
+      			selon StyleMinMax
+      				
+      				// Lignes
+      				cas MINMAX_LIGNES
+      					
+      					dStylo(stSérie:Couleur, 1, stSérie:Epaisseur)
+      					dfond(transparent, 0)
+      					
+      					si m_nTypeGraphe = grRadar alors
+      						
+      						// Rectangle du cercle maxi
+      						stCercle:x1 = m_stCentreGraphe:x - stSérie:RayonMax
+      						stCercle:x2 = m_stCentreGraphe:x + stSérie:RayonMax						
+      						stCercle:y1 = m_stCentreGraphe:y - stSérie:RayonMax
+      						stCercle:y2 = m_stCentreGraphe:y + stSérie:RayonMax
+      						
+      						// Dessin du cercle maxi
+      						dcercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2)
+      
+      						// Rectangle du cercle mini
+      						stCercle:x1 = m_stCentreGraphe:x - stSérie:RayonMin
+      						stCercle:x2 = m_stCentreGraphe:x + stSérie:RayonMin						
+      						stCercle:y1 = m_stCentreGraphe:y - stSérie:RayonMin
+      						stCercle:y2 = m_stCentreGraphe:y + stSérie:RayonMin
+      												
+      						// Dessin du cercle mini
+      						dCercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2)						
+      						
+      					sinon
+      					
+      						// Ligne maxi
+      						dLigne(m_stRectangleGraphe:x1 + 1, stSérie:BorneMax:Point:y, m_stRectangleGraphe:x2, stSérie:BorneMax:Point:y)
+      						
+      						// Ligne mini
+      						dLigne(m_stRectangleGraphe:x1 + 1, stSérie:BorneMin:Point:y, m_stRectangleGraphe:x2, stSérie:BorneMin:Point:y)							
+      					fin
+      				
+      				
+      				// Zones	
+      				cas MINMAX_ZONES
+      
+      					dStylo(stSérie:Couleur, 1, stSérie:Epaisseur)
+      					dFond(stSérie:Couleur, 2, 2)
+      					
+      					SI m_nTypeGraphe = grRadar ALORS
+      
+      						dChangeMode(dessinXOR)
+      						dStylo(stSérie:Couleur || 0xFFFFFF, 1, stSérie:Epaisseur)
+      						dFond(stSérie:Couleur || 0xFFFFFF, 2, 2)
+      
+      						// Rectangle du cercle maxi + N
+      						stCercle:x1 = m_stCentreGraphe:x - (stSérie:RayonMax + 25)
+      						stCercle:x2 = m_stCentreGraphe:x + (stSérie:RayonMax + 25)				
+      						stCercle:y1 = m_stCentreGraphe:y - (stSérie:RayonMax + 25)
+      						stCercle:y2 = m_stCentreGraphe:y + (stSérie:RayonMax + 25)
+      						
+      						// Dessin du cercle maxi
+      						dCercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2)
+      						
+      						// Rectangle du cercle maxi
+      						stCercle:x1 = m_stCentreGraphe:x - stSérie:RayonMax
+      						stCercle:x2 = m_stCentreGraphe:x + stSérie:RayonMax
+      						stCercle:y1 = m_stCentreGraphe:y - stSérie:RayonMax
+      						stCercle:y2 = m_stCentreGraphe:y + stSérie:RayonMax
+      						
+      						// Dessin du cercle maxi
+      						dCercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2)
+      						
+      						dChangeMode(dessinnormal)
+      						dStylo(stSérie:Couleur, 1, stSérie:Epaisseur)
+      						dFond(stSérie:Couleur, 2, 2)
+      						
+      						// Rectangle du cercle mini
+      						stCercle:x1 = m_stCentreGraphe:x - stSérie:RayonMin
+      						stCercle:x2 = m_stCentreGraphe:x + stSérie:RayonMin						
+      						stCercle:y1 = m_stCentreGraphe:y - stSérie:RayonMin
+      						stCercle:y2 = m_stCentreGraphe:y + stSérie:RayonMin
+      						
+      						// Dessin du cercle mini
+      						dCercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2)	
+      						
+      					sinon
+      					
+      						// Zone maxi
+      						dRectangle(m_stRectangleGraphe:x1 + 1, m_stRectangleGraphe:y1, m_stRectangleGraphe:x2, stSérie:BorneMax:Point:y)
+      						
+      						// Zone mini
+      						dRectangle(m_stRectangleGraphe:x1 + 1, stSérie:BorneMin:Point:y, m_stRectangleGraphe:x2, m_stRectangleGraphe:y2)
+      					FIN
+      			FIN
+      		FIN		
+      	FIN
+      
+      	// Pour chaque zone
+      	POUR CHAQUE stZone DE m_tabZones
+      		
+      		// Dessin de la zone
+      		DessinZone(stZone)			
+      	FIN
+      	
+      	// Pour chaque drapeau
+      	pour chaque stDrapeau de m_tabdrapeaux depuisfin
+      		
+      		// Cherche le point correspondant
+      		nIndice = cherche(m_tabPoints, tcLinéaire, "Clé", stDrapeau:Clé)
+      		si nIndice > 0 ALORS
+      			
+      			
+      			stDrapeau:Enfoncé = Faux			
+      			// Dessin du drapeau
+      			DessinDrapeau(stDrapeau, m_tabPoints[nIndice]:Point)
+      			
+      		FIN		 
+      	FIN
+      	
+      	// Mise à jour
+      	Temporisation(0, tempoDessin)
+      	
+     type : 458752
+   -
+     name : On_WMSIZE
+     procedure_id : 1860232348299566794
+     type_code : 12
+     code : |1-
+      // Résumé : Gère l'événement de redimensionnement du graphe
+      // Syntaxe :
+      //[ <Résultat> = ] On_WMSIZE ()
+      //
+      // Paramètres :
+      //	Aucun
+      // Valeur de retour :
+      // 	booléen : Faux
+      //
+      Procédure privee On_WMSIZE()
+      
+      	// Demande au graphe de se redessiner
+      	WL.grDessine({m_sChampGraphe, indchamp})
+      
+      	// On devra recalculer les points
+      	m_bRecalculNécessaire = vrai
+      
+      	// Effectue le dessin
+      	Dessin()
+      	
+      // Empêche le graphe de se redessiner
+      renvoyer vrai
+     type : 458752
+   -
+     name : RecalculeCoordonnées
+     internal_properties : CAAAAAgAAACIJ61ZbkDfuMMMw/gS4jWiRZw9+sN1cGoRXLeG74He/C78OM5BpO81HE080TIxo5XHeOD6pMoppPavDFYWRLKOTYSN0bpkbhoD8Mp14aI3fbw+BzoVqVwPbqEH3H/dL2qSlYfqFFQE09TVHRX6pZorLtC/k47WpSYMR9tOjeMJH0jAoQookM6PzXTLMYGDmlXcoYoiltt63kJDO+xlDf05CnoF8g==
+     procedure_id : 1860232666127220689
+     type_code : 12
+     code : |1-
+      // Résumé : Recalcule les coordonnées de tous les points du graphe
+      // Syntaxe :
+      //RecalculeCoordonnées (<ChampGraphe>)
+      //
+      // Paramètres :
+      // 	ChampGraphe : Champ graphe
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure privee RecalculeCoordonnées(ChampGraphe)
+      
+      	nNbSéries 	est un entier
+      	nCatégorie	est un entier
+      	stSérie	  	est une serie
+      	stInfo	  	est un infopoint
+      	stLastInfo	est un INFOPOINT
+      	stDrapeau	est un drapeau
+      	stZone		est une zone
+      	rTotal		est un reel
+      	
+      	// Récupère le nombre de séries du graphe
+      	nNbSéries = ChampGraphe..Occurrence
+      	
+      	// Vide les informations sur les séries
+      	supprimetout(m_tabSéries)
+      	supprimetout(m_tabPoints)	
+      	VariableRAZ(m_stLastSerie)
+      	VariableRAZ(m_tabLastPoints)
+      	VariableRAZ(m_stLastTracker)
+      	
+      	// Si c'est un graphe radar
+      	si m_nTypeGraphe = grRadar ALORS
+      		
+      		// Détermine le centre du graphe
+      		m_stCentreGraphe:x = grInfoPoint(ChampGraphe, grAbscisse, grAxeX, grMin)
+      		m_stCentreGraphe:y = grInfoPoint(ChampGraphe, grOrdonnée, grAxeY, grMin)				
+      	sinon
+      		
+      		// Détermine le rectangle du graphe
+      		m_stRectangleGraphe:x1 = grInfoPoint(ChampGraphe, grAbscisse, grAxeX, grMin)
+      		m_stRectangleGraphe:y2 = grInfoPoint(ChampGraphe, grOrdonnée, grAxeY, grMin)
+      		m_stRectangleGraphe:x2 = grInfoPoint(ChampGraphe, grAbscisse, grAxeX, grMax)
+      		m_stRectangleGraphe:y1 = grInfoPoint(ChampGraphe, grOrdonnée, grAxeY, grMax)	
+      		
+      		// Si l'origine n'est pas à 0
+      		si ChampGraphe..AxeYMin <> 0 _et_ ChampGraphe..AxeYMax - ChampGraphe..AxeYMin <> 0 ALORS
+      						
+      			// Calcule l'offset de décalage
+      			m_nOffsetY = ((m_stRectangleGraphe:y1 - m_stRectangleGraphe:y2) / (ChampGraphe..AxeYMax - ChampGraphe..AxeYMin)) * ChampGraphe..AxeYMin
+      		FIN
+      	FIN
+      	
+      	si nNbSéries = 0 _ou_ m_nNbCategorie = 0 alors retour
+      	
+      	// Pour chaque série
+      	pour i = 1 _a_ nNbSéries
+      		
+      		VariableRAZ(stSérie)
+      		
+      		// Numéro de la série
+      		stSérie:Numéro = i		
+      		
+      		//
+      		// Récupère la valeur minimale et maximale de la série
+      		//
+      		
+      		// Récupère la valeur la plus basse
+      		stSérie:ValeurMin = ChampGraphe[stSérie:Numéro]..BorneMin
+      		
+      		// Récupère la valeur la plus haute
+      		stSérie:ValeurMax = ChampGraphe[stSérie:Numéro]..BorneMax
+      		
+      		//
+      		// Autres données
+      		//
+      		stSérie:Couleur 	= ChampGraphe[stSérie:Numéro]..CouleurSérie
+      		stSérie:Epaisseur 	= ChampGraphe[stSérie:Numéro]..Epaisseur
+      		
+      		si stSérie:Couleur = -1 ALORS
+      			stSérie:Couleur = m_tabCouleursSéries[(stSérie:Numéro modulo m_tabCouleursSéries..Occurrence) + 1]
+      		FIN
+      		
+      		si m_nTypeGraphe <> grRadar alors
+      		
+      			// Borne minimale
+      			stSérie:BorneMin:Point:y	= grInfoPoint(ChampGraphe, grOrdonnée, stSérie:Numéro, grMin)
+      			
+      			// Borne maximale
+      			stSérie:BorneMax:Point:y	= grInfoPoint(ChampGraphe, grOrdonnée, stSérie:Numéro, grMax)
+      		fin
+      			
+      		//
+      		// Parcours des valeurs du graphe
+      		//
+      		
+      		nCatégorie = 1
+      		rTotal = 0
+      
+      		pour nCatégorie=1 _a_ m_nNbCategorie
+      			
+      			VariableRAZ(stInfo)
+      			
+      			// Informations générales
+      			stInfo:Série 		= stSérie:Numéro
+      			stInfo:Catégorie	= nCatégorie
+      			stInfo:Clé			= stInfo:Série + "-" + stInfo:Catégorie
+      							
+      			// Récupère les coordonnées du point
+      			stInfo:Point:x = grInfoPoint(ChampGraphe, grAbscisse, stSérie:Numéro, stInfo:Catégorie)
+      			stInfo:Point:y = grInfoPoint(ChampGraphe, grOrdonnée, stSérie:Numéro, stInfo:Catégorie) 
+      														
+      			SI m_nTypeGraphe DANS (grHisto, grHistoEmpilé) ALORS
+      			
+      				// Dans un histogramme, Y correspond à la moitié de la hauteur de la barre
+      				stInfo:Point:y = m_stRectangleGraphe:y2 + (stInfo:Point:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY
+      			FIN
+      						
+      			si m_nTypeGraphe = grRadar  ALORS
+      				
+      				si ChampGraphe[stSérie:Numéro][stInfo:Catégorie] = stSérie:ValeurMin ALORS
+      
+      					// Borne minimale
+      					stSérie:BorneMin:Point = stInfo:Point
+      				FIN
+      				
+      				SI ChampGraphe[stSérie:Numéro][stInfo:Catégorie] = stSérie:ValeurMax ALORS
+      					
+      					// Borne maximale
+      					stSérie:BorneMax:Point = stInfo:Point
+      				FIN				
+      			FIN
+      			
+      			// Cumul
+      			rTotal += ChampGraphe[stSérie:Numéro][stInfo:Catégorie]
+      			
+      			// Enregistre le point
+      			ajoute(stSérie:Points, stInfo)			
+      			ajoute(m_tabPoints, stInfo)			
+      			
+      			// Conserve le point pour le prochain passage
+      			stLastInfo = stInfo
+      		FIN
+      		
+      		// Moyenne
+      		stSérie:ValeurMoy = rTotal / max(1, stSérie:Points..Occurrence)
+      		
+      		// Calcule la distance entre le point maxi et le centre du graphe (et donc le rayon du cercle maxi)
+      		stSérie:RayonMax = CalculeLongueurAxe(m_stCentreGraphe:x, m_stCentreGraphe:y, stSérie:BorneMax:Point:x, stSérie:BorneMax:Point:y)
+      		
+      		// Calcule la distance entre le point mini et le centre du graphe (et donc le rayon du cercle mini)
+      		stSérie:RayonMin = CalculeLongueurAxe(m_stCentreGraphe:x, m_stCentreGraphe:y, stSérie:BorneMin:Point:x, stSérie:BorneMin:Point:y)
+      		
+      		// Calcule la position de la valeur moyenne dans le graphe
+      		stSérie:stMoyenne:Point:x = m_stRectangleGraphe:x1 + (stSérie:ValeurMoy - ChampGraphe..AxeXMin) * stSérie:BorneMin:Point:x / Max(1, stSérie:ValeurMin - ChampGraphe..AxeXMin)
+      		stSérie:stMoyenne:Point:y = m_stRectangleGraphe:y2 - (stSérie:ValeurMoy - ChampGraphe..AxeYMin) * (m_stRectangleGraphe:y2 - stSérie:BorneMin:Point:y) / Max(1, stSérie:ValeurMin - ChampGraphe..AxeYMin)
+      		
+      		// Calcule le rayon moyen
+      		stSérie:RayonMoy = stSérie:ValeurMoy * stSérie:RayonMin / max(1, stSérie:ValeurMin)
+      		
+      		// Enregistre les informations sur la série
+      		ajoute(m_tabSéries, stSérie)
+      	FIN
+      	
+      	// Tri par RayonMax décroissant
+      	trie(m_tabSéries, ttMembre, "-RayonMax")
+      	
+      	// Calcule la distance entre le point maxi et le centre du graphe (et donc le rayon du cercle maxi)
+      	m_rRayonMax = CalculeLongueurAxe(m_stCentreGraphe:x, m_stCentreGraphe:y, m_tabSéries[1]:BorneMax:Point:x, m_tabSéries[1]:BorneMax:Point:y)
+      	
+      	// Tri par RayonMin croissant
+      	Trie(m_tabSéries, ttMembre, "RayonMin")
+      	
+      	// Calcule la distance entre le point mini et le centre du graphe (et donc le rayon du cercle mini)
+      	m_rRayonMin = CalculeLongueurAxe(m_stCentreGraphe:x, m_stCentreGraphe:y, m_tabSéries[1]:BorneMin:Point:x, m_tabSéries[1]:BorneMin:Point:y)
+      	
+      	// Restaure le tri par défaut
+      	Trie(m_tabSéries, ttMembre, "+Numéro")
+      	
+      	// Recalcule les coordonnées des drapeaux
+      	pour chaque stDrapeau de m_tabDrapeaux
+      		
+      		stDrapeau:Hauteur = 0
+      		
+      		// Récupère les coordonnées
+      		stDrapeau:Point:x	= grInfoPoint(ChampGraphe, grAbscisse, stDrapeau:Série, stDrapeau:Catégorie)
+      		stDrapeau:Point:y	= grInfoPoint(ChampGraphe, grOrdonnée, stDrapeau:Série, stDrapeau:Catégorie)
+      		
+      		SI m_nTypeGraphe DANS (grHisto, grHistoEmpilé) ALORS
+      			
+      			// Dans un histogramme, Y correspond à la moitié de la hauteur de la barre
+      			stDrapeau:Point:y = m_stRectangleGraphe:y2 + (stDrapeau:Point:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY			
+      		FIN
+      	FIN
+      	
+      	// Recalcule les coordonnées des zones
+      	pour chaque stZone de m_tabzones
+      		
+      		// Récupère les coordonnées
+      		stZone:PointMin:x	= grInfoPoint(ChampGraphe, grAbscisse, stZone:Série, stZone:CatégorieDépart)
+      		stZone:PointMin:y	= grInfoPoint(ChampGraphe, grOrdonnée, stZone:Série, stZone:CatégorieDépart)
+      		stZone:PointMax:x	= grInfoPoint(ChampGraphe, grAbscisse, stZone:Série, stZone:CatégorieArrivée)
+      		stZone:PointMax:y	= grInfoPoint(ChampGraphe, grOrdonnée, stZone:Série, stZone:CatégorieArrivée)
+      			
+      		SI m_nTypeGraphe DANS (grHisto, grHistoEmpilé) ALORS
+      			
+      			// Dans un histogramme, Y correspond à la moitié de la hauteur de la barre
+      			stZone:PointMin:y = m_stRectangleGraphe:y2 + (stZone:PointMin:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY				
+      			stZone:PointMax:y = m_stRectangleGraphe:y2 + (stZone:PointMax:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY				
+      		FIN
+      		
+      		// Récupère la valeur des zones		
+      		stZone:ValMin		= {m_sChampGraphe, indChamp}[stZone:Série][stZone:CatégorieDépart]
+      		stZone:ValMax		= {m_sChampGraphe, indChamp}[stZone:Série][stZone:CatégorieArrivée]
+      		
+      		supprimetout(stZone:Polygone)
+      	FIN
+      	
+      	// Pas besoin de recalculer les points au prochain dessin
+      	m_bRecalculNécessaire = faux
+     type : 458752
+   -
+     name : AjouteDrapeau
+     internal_properties : CAAAAAgAAABYA3VRhWOK0aCLH7ZuEG9qWoypHWU2mfWlA/6GyLLFYRnX9bDeNjKBQo05DIirCKt8XVG75zGTP5MbeOVWXpxv1nCWVim200XurUPOfCjDsGNYQPN6ZCgR/sAmMxNhExFBLBD8uSFTS7vTReQXmzzpTZj8aXbTd9Z3y0HXH/1Sb0rI
+     procedure_id : 1860265771735031066
+     type_code : 12
+     code : |1-
+      // Résumé : Ajoute un drapeau sur le graphe
+      // Syntaxe :
+      //[ <Résultat> = ] AjouteDrapeau (<nSérie> est entier, <nCatégorie> est entier, <sSymbole> est chaîne [, <bVersLeBas> est booléen])
+      //
+      // Paramètres :
+      //	nSérie (entier) : Numéro de la série
+      //	nCatégorie (entier) : Indice de la valeur dans la série
+      //	sSymbole (chaîne) : Symbole affiché sur le drapeau (un seul caractère autorisé)
+      // 	bVersLeBas (booléen - valeur par défaut=0) : Vrai pour afficher le drap à l'envers, Faux sinon (paramètre non pris en compte dans les graphes radar)
+      // Valeur de retour :
+      // 	entier :  Indice du drapeau
+      //
+      // Traitement automatique des exceptions :   exécuter le bloc de code CAS EXCEPTION:
+      //
+      Procédure PUBLIQUE AjouteDrapeau(local nSérie est un entier, local nCatégorie est un entier, local sSymbole est une chaine, local bVersLeBas est un booléen = faux)
+      
+      	stDrapeau est un DRAPEAU
+      	nIndice	  est un entier
+      
+      	// Vérifie si le drapeau existe déjà
+      	nIndice = Cherche(m_tabDrapeaux, tcLinéaire, "Clé", nSérie + "-" + nCatégorie)
+      	si nIndice > 0 ALORS
+      		
+      		// Modifie le drapeau
+      		ModifieDrapeau(nSérie, nCatégorie, sSymbole, bVersLeBas)
+      		renvoyer nIndice
+      	FIN
+      
+      	// On ne conserve que le premier caractère
+      	sSymbole = gauche(sSymbole, 1)
+      	
+      	// Crée le drapeau
+      	stDrapeau:Catégorie = nCatégorie
+      	stDrapeau:Série 	= nSérie
+      	stDrapeau:Symbole	= sSymbole
+      	stDrapeau:Clé		= nSérie + "-" + nCatégorie
+      	stDrapeau:Sens		= bVersLeBas
+      		
+      	// Récupère les coordonnées
+      	stDrapeau:Point:x	= grInfoPoint({m_sChampGraphe, indchamp}, grAbscisse, nSérie, nCatégorie)
+      	stDrapeau:Point:y	= grInfoPoint({m_sChampGraphe, indchamp}, grOrdonnée, nSérie, nCatégorie)
+      	
+      	SI m_nTypeGraphe DANS (grHisto, grHistoEmpilé) ALORS
+      		
+      		// Dans un histogramme, Y correspond à la moitié de la hauteur de la barre
+      		stDrapeau:Point:y = m_stRectangleGraphe:y2 + (stDrapeau:Point:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY				
+      	FIN
+      	
+      	// Enregistre le drapeau
+      	nIndice = ajoute(m_tabDrapeaux, stDrapeau)	
+      	
+      renvoyer nIndice
+      	
+      CAS EXCEPTION:
+      	renvoyer -1
+     type : 458752
+   -
+     name : ModifieDrapeau
+     procedure_id : 1860266686563147373
+     type_code : 12
+     code : |1-
+      // Résumé : Modifie un drapeau sur le graphe. Si le drapeau n'existe pas, il est créé
+      // Syntaxe :
+      //ModifieDrapeau (<nSérie> est entier, <nCatégorie> est entier, <sSymbole> est chaîne, <bVersLeBas> est booléen)
+      //
+      // Paramètres :
+      //	nSérie (entier) : Numéro de la série
+      //	nCatégorie (entier) : Indice de la valeur dans la série
+      //	sSymbole (chaîne) : Symbole affiché sur le drapeau (un seul caractère autorisé)
+      //	bVersLeBas (booléen) : Vrai si le drapeau doit être affiché à l'envers, Faux sinon (paramètre ignoré dans les graphes radar)
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PUBLIQUE ModifieDrapeau(local nSérie est un entier, local nCatégorie est un entier, local sSymbole est une chaine, local bVersLeBas est un booléen)
+      
+      	nIndice	  est un entier
+      
+      	// On ne conserve que le premier caractère
+      	sSymbole = gauche(sSymbole, 1)
+      		
+      	// Cherche le drapeau
+      	nIndice = cherche(m_tabDrapeaux, tcLinéaire, "Clé", nSérie + "-" + nCatégorie)
+      	si nIndice > 0 alors
+      		
+      		// Modifie le symbole du drapeau
+      		m_tabDrapeaux[nIndice]:Sens		= bVersLeBas
+      		m_tabDrapeaux[nIndice]:Symbole  = sSymbole		
+      	sinon
+      		
+      		AjouteDrapeau(nSérie, nCatégorie, sSymbole, bVersLeBas)
+      	FIN	
+     type : 458752
+   -
+     name : SupprimeDrapeau
+     procedure_id : 1860267408117689574
+     type_code : 12
+     code : |1-
+      // Résumé : Supprime un drapeau sur le graphe
+      // Syntaxe :
+      //SupprimeDrapeau (<nSérie> est entier, <nCatégorie> est entier)
+      //
+      // Paramètres :
+      //	nSérie (entier) : Numéro de la série
+      //	nCatégorie (entier) : Indice de la valeur dans la série
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PUBLIQUE SupprimeDrapeau(local nSérie est un entier, local nCatégorie est un entier)
+      
+      	nIndice	  est un entier
+      
+      	// Cherche le drapeau
+      	nIndice = cherche(m_tabDrapeaux, tcLinéaire, "Clé", nSérie + "-" + nCatégorie)
+      	si nIndice > 0 alors
+      		
+      		// Supprime le drapeau
+      		supprime(m_tabDrapeaux, nIndice)
+      	FIN	
+     type : 458752
+   -
+     name : SupprimeToutDrapeau
+     procedure_id : 1860267670110755595
+     type_code : 12
+     code : |1-
+      // Résumé : Supprime tous les drapeaux
+      // Syntaxe :
+      //SupprimeToutDrapeau ( [<nSérie> est entier])
+      //
+      // Paramètres :
+      // 	nSérie (entier - valeur par défaut=-1) : Numéro de la série dont les drapeaux doivent être supprimés ou -1 pour supprimer tous les drapeaux
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure publique SupprimeToutDrapeau(LOCAL nSérie est un entier = -1)
+      
+      	nIndice	  est un entier
+      
+      	si nSérie = -1 ALORS
+      		
+      		// Supprime tous les drapeaux
+      		SupprimeTout(m_tabDrapeaux)		
+      	sinon
+      		
+      		// Premier drapeau de la série
+      		nIndice = cherche(m_tabDrapeaux, tcLinéaire, "Série", nSérie)
+      		tantque nIndice > 0
+      			
+      			// Supprime le drapeau
+      			supprime(m_tabDrapeaux, nIndice)
+      			
+      			// Drapeau suivant dans la série
+      			nIndice = Cherche(m_tabDrapeaux, tcLinéaire, "Série", nSérie)
+      		FIN
+      	FIN
+     type : 458752
+   -
+     name : DessinDrapeau
+     procedure_id : 1860270036637828309
+     type_code : 12
+     code : |1-
+      // Résumé : <indiquez ici ce que fait la procédure>
+      // Syntaxe :
+      //DessinDrapeau (<stDrapeau> est DRAPEAU, <stPoint> est POINT [, <bSurvol> est booléen])
+      //
+      // Paramètres :
+      //	stDrapeau (DRAPEAU) : Informations sur le drapeau
+      //	stPoint (POINT) : Coordonnée du drapeau
+      //	bSurvol (booléen - valeur par défaut=0) : Vrai pour un dessin de survol, Faux sinon
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PRIVEE DessinDrapeau(stDrapeau est un drapeau, stPoint est un point, local bSurvol est un booléen = faux, *)
+      
+      	nCouleur 	est un entier
+      	
+      	nHauteur	est un entier
+      	nCouleurF	est un entier
+      	nIncrément	est un entier	
+      	
+      	// Récupère la couleur de la série
+      	nCouleur = m_tabSéries[Cherche(m_tabSéries, tcLinéaire, "Numéro", stDrapeau:Série)]:Couleur
+      	
+      	// Ne re-dessine pas le drapeau si son état ne change pas
+      	si MesParamètres..NbReçus = 3 alors
+      		si stDrapeau:Survol 	_et_ bSurvol 		alors retour
+      		si pas stDrapeau:Survol _et_ pas bSurvol 	alors retour
+      	fin
+      	
+      	si stDrapeau:Hauteur = 0 alors
+      	
+      		// Hauteur par défaut 
+      		nHauteur = 40
+      		nIncrément = 1
+      		
+      		// Dans le cas d'un graphe radar, si le drapeau se trouve en dessous du centre du graphe OU si on a demandé explicitement le sens
+      		si (m_nTypeGraphe = grRadar _et_ stPoint:y > m_stCentreGraphe:y) ou stDrapeau:Sens = 1 ALORS
+      			
+      			// Le drapeau devra être à l'envers
+      			nHauteur 	= -nHauteur
+      			nIncrément 	= -nIncrément
+      		FIN
+      		
+      		// Récupère la couleur de fond du graphe
+      		nCouleurF = {m_sChampGraphe, indchamp}..CouleurFond
+      		si nCouleurF = Transparent ALORS
+      			
+      			// Récupère la couleur de fond de la fenêtre
+      			nCouleurF = {FenEnExécution, indfenetre}..CouleurFond
+      		FIN
+      		
+      		// Si la couleur à l'emplacement du drapeau correspond à la couleur de fond de la fenêtre
+      		tantque pas (dPixelCouleur(m_sChampGraphe, stPoint:x + 18, 	stPoint:y - nHauteur / 2) dans (nCouleurF, grCouleur({m_sChampGraphe, indChamp}, grCouleurQuadrillage), grCouleur({m_sChampGraphe, indChamp}, grCouleurQuadrillageRelief)))
+      			// Augmente la hauteur
+      			nHauteur += nIncrément
+      			si abs(nHauteur) >= 99 alors sortir
+      		FIN
+      
+      		// Conserve la hauteur calculée
+      		stDrapeau:Hauteur = nHauteur
+      
+      	sinon
+      		
+      		// Récupère la hauteur du drapeau
+      		nHauteur = stDrapeau:Hauteur
+      	fin
+      	
+      	// Trace le bâton du drapeau
+      	dligne(stPoint:x, stPoint:y, stPoint:x, stPoint:y - nHauteur, nCouleur)
+      	
+      	si m_nTypeGraphe = grRadar ALORS
+      		
+      		dStylo(nCouleur, 3, 1)
+      		
+      		// Trace une ligne vers le centre
+      		dLigne(stPoint:x, stPoint:y, m_stCentreGraphe:x, m_stCentreGraphe:y)
+      		
+      		dStylo(nCouleur, 0)
+      	FIN
+      	
+      	// Dessin du drapeau
+      	si bSurvol alors
+      		dRectangleDégradé(stPoint:x, stPoint:y - nHauteur, stPoint:x + 17, stPoint:y - (nHauteur - 17), RVB(209, 209, 209), Blanc, (stDrapeau:Enfoncé ? 90 sinon 270))
+      	sinon
+      		dRectangleDégradé(stPoint:x, stPoint:y - nHauteur, stPoint:x + 17, stPoint:y - (nHauteur - 17), RVB(239, 239, 239), Blanc, 270)
+      	fin
+      		
+      	// Cadre du drapeau
+      	dRectangle(stPoint:x, stPoint:y - nHauteur, stPoint:x + 17, stPoint:y - (nHauteur - 17), Transparent, nCouleur)
+      	
+      	// Dessin du symbole
+      	dtexte(stPoint:x + 5, stPoint:y - (nHauteur - 1), stDrapeau:Symbole, nCouleur)
+      	
+      	// Enregistre l'état
+      	stDrapeau:Survol = bSurvol
+     type : 458752
+   -
+     name : On_WMMOUSEMOVE
+     internal_properties : CAAAAAgAAAC2RvxL3tOqeLLzy1Dy6Ij31u8J+Btscbnz0wLc4ABTejlEmzMLSNAeeY7oorIpPqVusR4xlqEyfKQBzYySuJEhH6TvIKeqlt5LDb92+fc3tUgHNRM5btD7JLa1T35+FCFuLCVJ6+RHrjKk8DnbzT+Cnw2oznarJTmwQm9QrLPEpONY0anz2ND4dzgwi4x6uQ/+wre0MIBrv99yLtAJnuZF23cYobzS5pTmnhM+YmL2oWqp6h0szlntY3JxtaNVgWgRWrO/SayaNF0wcv0A/85dROV3VuUPSchhmRR0V7cQQ7dC5QgFE2e0fZWFFMGj3gMU/aqlkQ==
+     procedure_id : 1860274705267382662
+     type_code : 12
+     code : |1-
+      // Résumé : Gère l'événement de survol du champ graphe
+      // Syntaxe :
+      //[ <Résultat> = ] On_WMMOUSEMOVE ()
+      //
+      // Paramètres :
+      //	Aucun
+      // Valeur de retour :
+      // 	booléen :     Faux si un drapeau a été survolé (aucune autre valeur de retour dans le cas contraire)
+      //
+      Procédure PRIVEE On_WMMOUSEMOVE()
+      
+      	nX, nY 		sont des entiers
+      	stInfo		est un INFOPOINT
+      	
+      	stDrapeau	est un drapeau
+      	stZone		est une zone
+      	
+      	bSurvoléD	est un booléen
+      	bSurvoléZ	est un booléen
+      	
+      	bCatch		est un booléen
+      	rRayon		est un reel
+      	
+      	nSérie		est un entier
+      	sSéries		est une chaine
+      	sCatégories	est une chaine
+      	nMaxY		est un entier
+      	
+      	SectionCritiqueDébut()
+      	
+      	// Récupère les coordonnées de la souris
+      	nX = sourisposx
+      	nY = sourisposY
+      	
+      	// Si c'est un graphe radar
+      	SI m_nTypeGraphe = grRadar ALORS
+      	
+      		// Calcule le rayon de l'axe [Centre du graphe - Souris]
+      		rRayon = arrondi(CalculeLongueurAxe(m_stCentreGraphe:x, m_stCentreGraphe:y, nX, nY))
+      		
+      		// Si la souris se trouve dans la zone entre le point minimum et le point maximum
+      		bCatch = m_rRayonMin <= rRayon <= m_rRayonMax
+      	
+      		si bCatch alors
+      			
+      			// Dessin du tracker
+      			DessinTracker(rRayon)	
+      			
+      			// Si au moins un point traverse le tracker
+      			si m_stLastSerie:Points..Occurrence > 0 ALORS
+      				
+      				// Si une callback de survol a été définie
+      				SI CallbackSurvol <> "" ALORS
+      					
+      					// Récupère la liste des séries et des catégories par série
+      					pour i = 1 _a_ m_stLastSerie:Points..Occurrence
+      						
+      						// Si la série change
+      						si m_stLastSerie:Points[i]:Série <> nSérie ALORS
+      							
+      							// Conserve son numéro
+      							nSérie = m_stLastSerie:Points[i]:Série
+      							
+      							// Complète la liste des séries
+      							sSéries += [tab] + nSérie
+      						FIN
+      						
+      						// Complète la liste des catégories
+      						sCatégories += [tab] + nSérie + ";" + m_stLastSerie:Points[i]:Catégorie
+      					FIN						
+      					
+      					QUAND EXCEPTION DANS
+      						
+      						// Exécute la callback de survol
+      						ExécuteTraitement(CallbackSurvol, trtProcédure, sCatégories)
+      					FAIRE
+      						
+      					FIN
+      				FIN
+      			FIN				
+      		sinon
+      			DessinTracker(0)	
+      		FIN		
+      	
+      	sinon
+      	
+      		// Passe en mode XOR
+      		dChangeMode(dessinXOR)
+      		
+      		// Si le dessin des plots est actif
+      		SI DessinPlotActif ALORS
+      			
+      			// Pour chacun des points
+      			POUR CHAQUE stInfo DE m_tabPoints
+      				
+      				// Si la souris se trouve sur la droite verticale passant par le point
+      				bCatch = (stInfo:Point:x <= nX <= stInfo:Point:x)
+      		
+      				si bCatch alors
+      				
+      					// Efface les plots et le tracker précédent
+      					EffacePlots()
+      					sortir
+      				fin
+      			fin
+      		FIN
+      		
+      		nMaxY = 99999999
+      	
+      		// Pour chacun des points
+      		pour chaque stInfo de m_tabpoints
+      					
+      			// Si la souris se trouve sur la droite verticale passant par le point
+      			bCatch = (stInfo:Point:x <= nX <= stInfo:Point:x)
+      			
+      			// Si la souris passe sur l'axe d'une donnée
+      			SI bCatch ALORS
+      				
+      				// Conserve le point le plus haut
+      				si nMaxY > stInfo:Point:y alors
+      					nMaxY = stInfo:Point:y
+      				FIN
+      				
+      				// Si le dessin des plots est actif
+      				SI DessinPlotActif ALORS
+      				
+      					// Dessin des plots et du tracker
+      					DessinPlots(stInfo)
+      				fin
+      					
+      				si nSérie <> stInfo:Série alors
+      					nSérie = stInfo:Série
+      					
+      					// Complète la liste des séries
+      					sSéries += [TAB] + nSérie						
+      				FIN
+      				
+      				// Complète la liste des catégories
+      				sCatégories += [TAB] + nSérie + ";" + stInfo:Catégorie
+      			FIN
+      		fin
+      		
+      		si nMaxY <> 99999999 ALORS
+      			
+      			si DessinTrackerActif ALORS
+      				
+      				m_stLastTracker:Clé 		= nMaxY
+      				m_stLastTracker:Couleur 	= RougePastel
+      				m_stLastTracker:Epaisseur	= 1
+      				m_stLastTracker:Point		= [nX, nMaxY]
+      			
+      				// Dessin du tracker	
+      				dLigne(m_stLastTracker:Point:x, m_stLastTracker:Point:y, m_stLastTracker:Point:x, m_stRectangleGraphe:y2, m_stLastTracker:Couleur || 0xFFFFFF, m_stLastTracker:Epaisseur)				
+      			FIN			
+      		FIN
+      	
+      		// Restaure le mode de dessin
+      		dChangeMode(dessinNormal)
+      		
+      		// Si on a survolé au moins une série et l'une de ses valeurs
+      		si sSéries <> "" alors
+      			
+      			// Si une callback de survol a été définie
+      			SI CallbackSurvol <> "" ALORS
+      				
+      				QUAND EXCEPTION DANS
+      					
+      					// Exécute la callback de survol
+      					ExécuteTraitement(CallbackSurvol, trtProcédure, sCatégories)
+      				FAIRE
+      					
+      				FIN
+      			FIN
+      		FIN		
+      	fin
+      		
+      	pour chaque element stDrapeau de m_tabDrapeaux
+      		
+      		// Détermine si la souris se trouve à l'emplacement d'un drapeau
+      		bCatch = (stDrapeau:Point:x - 1 <= nX <= stDrapeau:Point:x + 17 _ET_ stDrapeau:Point:y - stDrapeau:Hauteur <= nY <= stDrapeau:Point:y - (stDrapeau:Hauteur - 17))
+      						
+      		// Si la souris se trouve à l'emplacement d'un drapeau
+      		si bSurvoléD = faux _et_ bCatch ALORS
+      	
+      			// Dessin du survol du drapeau
+      			DessinDrapeau(stDrapeau, stDrapeau:Point, vrai)
+      			bSurvoléD = vrai
+      		sinon
+      			
+      			// Dessin du survol du drapeau
+      			DessinDrapeau(stDrapeau, stDrapeau:Point, faux)
+      		FIN	
+      	FIN
+      	
+      	POUR CHAQUE ELEMENT stZone DE m_tabZones
+      		
+      		// Si c'est un graphe radar
+      		si m_nTypeGraphe = grRadar ALORS
+      			
+      			// Détermine si la souris se trouve dans le polygone de la zone
+      			bCatch = PointDansZone(nX, nY, stZone:Polygone)			
+      		sinon
+      		
+      			// Détermine si la souris se trouve dans le rectangle de la zone
+      			bCatch = (stZone:PointMin:x  <= nX <= stZone:PointMax:x) _et_ (m_stRectangleGraphe:y1 <= nY <= m_stRectangleGraphe:y2)
+      		FIN
+      		
+      		// Si la souris se trouve à l'emplacement d'un point et d'un drapeau
+      		SI bSurvoléZ = Faux _ET_ bCatch ALORS
+      			
+      			// Dessin du survol du drapeau
+      			DessinZone(stZone, Vrai)
+      			bSurvoléZ = Vrai
+      		SINON
+      			
+      			// Dessin du survol du drapeau
+      			DessinZone(stZone, Faux)
+      		FIN	
+      	FIN
+      	
+      	// Si un drapeau ou une zone a été survolé
+      	si bSurvoléD ou bSurvoléZ ALORS						
+      		
+      		
+      		// Change le curseur de la souris
+      		{m_sChampGraphe, indChamp}..CurseurSouris = curMainSystème				
+      		si bSurvoléD alors renvoyer faux
+      	sinon
+      		// Restaure le curseur de la souris
+      		{m_sChampGraphe, indChamp}..CurseurSouris = curFlèche
+      	FIN
+      	
+      	renvoyer vrai
+      Fin:
+      	SectionCritiqueFin()
+     type : 458752
+   -
+     name : DessinPlots
+     internal_properties : CAAAAAgAAAANze9rCZOos1AVCd6fSxwEjkktPWy7t6Y1GLTnluOn3PL/zxH1zJNM5NY736lTqn33blp2lSLRV3oKOVkDAEXs2Bi+Ne9gwRxnNNw0XEQrbBlqNypbk1LNuEelXJmrSXAStdNq6r5ofyAhd9skU4RxFpD/WW4G2drQo71OlylB+KtDPO0Jx+noGu2UdIxzkhQsY//2
+     procedure_id : 1860501127353449737
+     type_code : 12
+     code : |1-
+      // Résumé : Dessin du tracker et des plots
+      // Syntaxe :
+      //DessinPlots (<stInfo> est INFOPOINT)
+      //
+      // Paramètres :
+      //	stInfo (INFOPOINT) : Infos sur le point
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure privee DessinPlots(stInfo est un infopoint)
+      
+      	nCouleur	est un entier
+      	nIndice		est un entier
+      	stSérie		est une serie
+      	stPoint		est un infopoint
+      	
+      	// Recherche la série correspondante
+      	nIndice = Cherche(m_tabSéries, tcLinéaire, "Numéro", stInfo:Série)
+      	SI nIndice > 0 ALORS
+      		
+      		// Récupère la série
+      		stSérie = m_tabSéries[nIndice]
+      		
+      		// Récupère la couleur et l'inverse
+      		nCouleur = stSérie:Couleur
+      		nCouleur = nCouleur || 0xFFFFFF
+      	
+      		// Définit les donnée du point		
+      		stPoint:Catégorie = stInfo:Catégorie
+      		stPoint:Série 	  = stInfo:Série
+      		stPoint:Couleur	  = stSérie:Couleur
+      		stPoint:Epaisseur = stSérie:Epaisseur
+      		stPoint:Point	  = stInfo:Point
+      		
+      		// Enregistre le point
+      		ajoute(m_tabLastPoints, stPoint)
+      		
+      		// Dessin du plot
+      		dRectangle(stInfo:Point:x - 3, stInfo:Point:y - 3, stInfo:Point:x + 3, stInfo:Point:y + 3, nCouleur, nCouleur)
+      	FIN	
+      	
+     type : 458752
+   -
+     name : On_WMLBUTTONUP
+     internal_properties : CAAAAAgAAAD8S9qRxs2RQ67bztGknyx2Aqkq4ThoFCoF6FQohbO0gbcGrDpu7E890iSC+rHk1WqRorbCfBBPETMq3307zWU7eMNk0VTArzcLOgxQWMxnXhKQ1QkHy8s4a1meVQzmJXPfCkaI7s1ZZpqR0XiuYo1YMWOcZ9pFLKfwqa2Ti6QG+BEjYDKSBWKrAYKBUSMC5Zqc9FqZ0SYeMI1QmxnjAAK74X574yFrhGqtNc+xovljO94FitlW31cQ+aAwKC+I
+     procedure_id : 1860516039480031618
+     type_code : 12
+     code : |1-
+      // Résumé : Gère l'événement de clic sur le champ graphe
+      // Syntaxe :
+      //On_WMLBUTTONUP ()
+      //
+      // Paramètres :
+      //	Aucun
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PRIVEE On_WMLBUTTONUP()
+      
+      	nX, nY 		sont des entiers
+      	stDrapeau	est un drapeau
+      	stZone		est une zone
+      	bCatch		est un booléen
+      
+      	// Récupère les coordonnées de la souris
+      	nX = SourisPosX
+      	nY = SourisPosY
+      	
+      	POUR CHAQUE stDrapeau DE m_tabDrapeaux
+      		
+      		// Si la souris se trouve à l'emplacement d'un point et d'un drapeau
+      		SI (stDrapeau:Point:x - 1 <= nX <= stDrapeau:Point:x + 17 _ET_ stDrapeau:Point:y - stDrapeau:Hauteur <= nY <= stDrapeau:Point:y - (stDrapeau:Hauteur - 17)) ALORS
+      			
+      			stDrapeau:Enfoncé = faux
+      			DessinDrapeau(stDrapeau, stDrapeau:Point, vrai, vrai)
+      			
+      			// Si une callback de clic a été définie
+      			si CallbackDrapeau <> "" alors
+      			
+      				quand exception dans
+      					
+      					// Exécute la callback de clic
+      					ExécuteTraitement(CallbackDrapeau, trtProcédure, stDrapeau:Symbole)
+      				FAIRE
+      					
+      				FIN
+      			FIN
+      						
+      			// On sort de la boucle
+      			retour
+      		FIN	
+      	FIN
+      	
+      	pour chaque stZone de m_tabzones
+      		
+      		// Si c'est un graphe radar
+      		SI m_nTypeGraphe = grRadar ALORS
+      			
+      			// Détermine si la souris se trouve dans le polygone de la zone
+      			bCatch = PointDansZone(nX, nY, stZone:Polygone)			
+      		SINON
+      			
+      			// Détermine si la souris se trouve dans le rectangle de la zone
+      			bCatch = (stZone:PointMin:x  <= nX <= stZone:PointMax:x) _ET_ (m_stRectangleGraphe:y1 <= nY <= m_stRectangleGraphe:y2)
+      		FIN
+      		
+      		// Si la souris se trouve à l'emplacement d'un point et d'un drapeau
+      		SI bCatch ALORS
+      			
+      			// Si une callback de clic a été définie
+      			SI CallbackZone <> "" ALORS
+      				
+      				QUAND EXCEPTION DANS
+      					
+      					// Exécute la callback de clic
+      					ExécuteTraitement(CallbackZone, trtProcédure, stZone:Nom)
+      				FAIRE
+      				FIN
+      			FIN
+      			
+      			// On sort de la boucle
+      			retour
+      		FIN	
+      	FIN
+      		
+     type : 458752
+   -
+     name : AjouteZone
+     internal_properties : CAAAAAgAAABYA3VRhWOK0aCLH7ZuEG9qWoypHWU2mfWlA/6GyLLFYRnX9bDeNjKBQo05DIirCKt8XVG75zGTP5MbeOVWXpxv1nCWVim200XurUPOfCjDsGNYQPN6ZCgR/sAmMxNhExFBLBD8uSFTS7vTReQXmzzpTZj8aXbTd9Z3y0HXH/1Sb0rI
+     procedure_id : 1860520042391597005
+     type_code : 12
+     code : |1-
+      // Résumé : Ajoute un drapeau sur le graphe
+      // Syntaxe :
+      //[ <Résultat> = ] AjouteZone (<sNom> est chaîne, <nSérie> est entier, <nCatégorieDépart> est entier, <nCatégorieArrivée> est entier [, <nCouleur> est entier])
+      //
+      // Paramètres :
+      //	sNom (chaîne) : Nom de la zone (ce nom doit être unique)
+      //	nSérie (entier) : Numéro de la série
+      //	nCatégorieDépart (entier) : Indice de la valeur de départ de la zone
+      //	nCatégorieArrivée (entier) : Indice de la valeur d'arrivée de la zone
+      //	nCouleur (entier - valeur par défaut=8421504) : Couleur de la zone
+      // Valeur de retour :
+      // 	entier : Indice d'insertion
+      //
+      // Traitement automatique des exceptions :   exécuter le bloc de code CAS EXCEPTION:
+      //
+      Procédure PUBLIQUE AjouteZone(local sNom est une chaine, local nSérie est un entier, local nCatégorieDépart est un entier, local nCatégorieArrivée est un entier, local nCouleur est un entier = grisFonce)
+      
+      	stZone est une zone
+      	nIndice est un entier
+      
+      	stZone:Nom 				= sNom
+      	stZone:Série			= nSérie
+      	stZone:CatégorieDépart	= nCatégorieDépart
+      	stZone:CatégorieArrivée	= nCatégorieArrivée
+      	stZone:Couleur			= nCouleur
+      		
+      	// Récupère les coordonnées
+      	stZone:PointMin:x	= grInfoPoint({m_sChampGraphe, indchamp}, grAbscisse, nSérie, nCatégorieDépart)
+      	stZone:PointMin:y	= grInfoPoint({m_sChampGraphe, indchamp}, grOrdonnée, nSérie, nCatégorieDépart)
+      	stZone:PointMax:x	= grInfoPoint({m_sChampGraphe, indChamp}, grAbscisse, nSérie, nCatégorieArrivée)
+      	stZone:PointMax:y	= grInfoPoint({m_sChampGraphe, indChamp}, grOrdonnée, nSérie, nCatégorieArrivée)
+      	
+      	SI m_nTypeGraphe DANS (grHisto, grHistoEmpilé) ALORS
+      		
+      		// Dans un histogramme, Y correspond à la moitié de la hauteur de la barre
+      		stZone:PointMin:y = m_stRectangleGraphe:y2 + (stZone:PointMin:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY				
+      		stZone:PointMax:y = m_stRectangleGraphe:y2 + (stZone:PointMax:y - m_stRectangleGraphe:y2) * 2 + m_nOffsetY				
+      	FIN
+      	
+      	// Récupère la valeur des zones
+      	stZone:ValMin		= {m_sChampGraphe, indChamp}[nSérie][nCatégorieDépart]
+      	stZone:ValMax		= {m_sChampGraphe, indChamp}[nSérie][nCatégorieArrivée]
+      	
+      	// Enregistre la zone
+      	nIndice = ajoute(m_tabZones, stZone)	
+      	
+      renvoyer nIndice
+      
+      CAS EXCEPTION:
+      	renvoyer -1
+     type : 458752
+   -
+     name : SupprimeZone
+     procedure_id : 1860521107543537972
+     type_code : 12
+     code : |1-
+      // Résumé : Supprime une zone sur le graphe
+      // Syntaxe :
+      //SupprimeZone (<sNom> est chaîne)
+      //
+      // Paramètres :
+      //	sNom (chaîne) : Nom de la zone à supprimer
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PUBLIQUE SupprimeZone(local sNom est une chaine)
+      
+      	nIndice	  est un entier
+      
+      	// Cherche la zone
+      	nIndice = cherche(m_tabZones, tcLinéaire, "Nom", majuscule(sNom))
+      	si nIndice > 0 alors
+      		
+      		// Supprime la zone
+      		supprime(m_tabZones, nIndice)
+      	FIN	
+     type : 458752
+   -
+     name : SupprimeToutZone
+     procedure_id : 1860521369536604367
+     type_code : 12
+     code : |1-
+      // Résumé : Supprime toutes les zones
+      // Syntaxe :
+      //SupprimeToutZone ( [<nSérie> est entier])
+      //
+      // Paramètres :
+      // 	nSérie (entier - valeur par défaut=-1) : Numéro de la série dont les zones doivent être supprimée ou -1 pour supprimer toutes les zones
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure publique SupprimeToutZone(LOCAL nSérie est un entier = -1)
+      
+      	nIndice	  est un entier
+      
+      	si nSérie = -1 ALORS
+      		
+      		// Supprime toutes les zones
+      		SupprimeTout(m_tabZones)		
+      	sinon
+      		
+      		// Première zone de la série
+      		nIndice = cherche(m_tabZones, tcLinéaire, "Série", nSérie)
+      		tantque nIndice > 0
+      			
+      			// Supprime la zone
+      			supprime(m_tabZones, nIndice)
+      			
+      			// Zone suivante dans la série
+      			nIndice = Cherche(m_tabZones, tcLinéaire, "Série", nSérie)
+      		FIN
+      	FIN
+     type : 458752
+   -
+     name : ModifieZone
+     procedure_id : 1860521854867956287
+     type_code : 12
+     code : |1-
+      // Résumé : Modifie une zone sur le graphe. Si la zone n'existe pas, elle est créée
+      // Syntaxe :
+      //ModifieZone (<sNom> est chaîne, <nSérie> est entier, <nCatégorieDépart> est entier, <nCatégorieArrivée> est entier [, <nCouleur> est entier])
+      //
+      // Paramètres :
+      //	sNom (chaîne) : Nom de la zone à modifier
+      //	nSérie (entier) : Numéro de la série
+      //	nCatégorieDépart (entier) : Indice de la valeur de départ de la zone
+      //	nCatégorieArrivée (entier) : Indice de la valeur d'arrivée de la zone
+      // 	nCouleur (entier - valeur par défaut=grisclair) : Couleur de la zone
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PUBLIQUE ModifieZone(LOCAL sNom est une chaine, local nSérie est un entier, local nCatégorieDépart est un entier, local nCatégorieArrivée est un entier, local nCouleur est un entier = grisFonce)
+      
+      	nIndice	  est un entier
+      		
+      	// Cherche la zone
+      	nIndice = cherche(m_tabZones, tcLinéaire, "Nom", majuscule(sNom))
+      	si nIndice > 0 alors
+      		
+      		// Supprime la zone
+      		supprime(m_tabZones, nIndice)
+      	fin
+      		
+      	// Ajoute une zone
+      	AjouteZone(sNom, nSérie, nCatégorieDépart, nCatégorieArrivée, nCouleur)
+     type : 458752
+   -
+     name : DessinZone
+     procedure_id : 1860522829825627904
+     type_code : 12
+     code : |1-
+      // Résumé : Dessin d'une zone
+      // Syntaxe :
+      //DessinZone (<stZone> est ZONE [, <bSurvol> est booléen])
+      //
+      // Paramètres :
+      //	stZone (ZONE) : Zone à afficher
+      // 	bSurvol (booléen - valeur par défaut=0) : Vrai en cas de survol de la zone, Faux sinon
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure privee DessinZone(stZone est une zone, local bSurvol est un booléen = faux)
+      
+      	tabPoints		est un tableau d'entiers
+      
+      	// Ne re-dessine pas le drapeau si son état ne change pas
+      	SI MesParamètres..NbReçus = 2 ALORS
+      		SI stZone:Survol 	_ET_ bSurvol 		ALORS RETOUR
+      		SI PAS stZone:Survol _ET_ PAS bSurvol 	ALORS RETOUR
+      	FIN
+      	
+      	// Pas de bordure
+      	dstylo(Transparent)
+      	
+      	// Fond hachuré
+      	dfond(bSurvol ? rougepastel sinon stZone:Couleur, 2, 2)
+      	
+      	si m_nTypeGraphe = grRadar alors
+      			
+      		// Détermine si on doit recalculer le polygone de la zone
+      		si stZone:Polygone..occurrence = 0 alors
+      			
+      			// Calcule le polygone de la zone
+      			CalculePolygoneZone(stZone)		
+      		fin
+      		
+      		// Dessin de la zone
+      		tabPoints = stZone:Polygone
+      		dPolygone(tabPoints)		
+      		
+      	sinon
+      		// Dessin de la zone
+      		dRectangle(stZone:PointMin:x, m_stRectangleGraphe:y1, stZone:PointMax:x, m_stRectangleGraphe:y2)	
+      	FIN
+      	
+      	
+      	stZone:Survol = bSurvol
+     type : 458752
+   -
+     name : On_WMLBUTTONDOWN
+     procedure_id : 1860631239093844904
+     type_code : 12
+     code : |1-
+      // Résumé : Gère l'événement de clic sur le champ graphe
+      // Syntaxe :
+      //On_WMLBUTTONDOWN ()
+      //
+      // Paramètres :
+      //	Aucun
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PRIVEE On_WMLBUTTONDOWN()
+      
+      	nX, nY 		sont des entiers
+      	stDrapeau	est un drapeau
+      
+      	// Récupère les coordonnées de la souris
+      	nX = SourisPosX
+      	nY = SourisPosY
+      	
+      	POUR CHAQUE stDrapeau DE m_tabDrapeaux
+      		
+      		// Si la souris se trouve à l'emplacement d'un point et d'un drapeau
+      		SI (stDrapeau:Point:x - 1 <= nX <= stDrapeau:Point:x + 17 _ET_ stDrapeau:Point:y - stDrapeau:Hauteur <= nY <= stDrapeau:Point:y - (stDrapeau:Hauteur - 17)) ALORS
+      			
+      			stDrapeau:Enfoncé = Vrai
+      			DessinDrapeau(stDrapeau, stDrapeau:Point, vrai, vrai)			
+      		sinon
+      			
+      			stDrapeau:Enfoncé = faux
+      			DessinDrapeau(stDrapeau, stDrapeau:Point)			
+      		FIN	
+      	FIN
+      	
+     type : 458752
+   -
+     name : CalculePolygoneZone
+     procedure_id : 1860865181667693889
+     type_code : 12
+     code : |1-
+      // Résumé : Calcule le polygone affichable d'une zone
+      // Syntaxe :
+      //CalculePolygoneZone (<stZone> est ZONE)
+      //
+      // Paramètres :
+      //	stZone (ZONE) : Zone dont le polygone doit être calculé
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure privee CalculePolygoneZone(stZone est une zone)
+      
+      	
+      	nIndice	est un entier
+      	
+      	// Vide le polygone
+      	supprimetout(stZone:Polygone)
+      	
+      	// Le polygone démarre au centre
+      	ajoute(stZone:Polygone, m_stCentreGraphe:x)
+      	ajoute(stZone:Polygone, m_stCentreGraphe:y)
+      	
+      	// Pour chaque point entre le point de départ et le point d'arrivée
+      	pour i = stZone:CatégorieDépart _a_ stZone:CatégorieArrivée
+      		
+      		// Recherche le point
+      		nIndice = cherche(m_tabPoints, tcLinéaire, "Clé", stZone:Série + "-" + i)
+      		si nIndice > 0 alors
+      		
+      			// Ajoute le point correspondant à la catégorie
+      			PolygoneZoneAjouteSommet(stZone, m_tabPoints[nIndice])		 
+      		fin
+      	FIN
+      	
+      	// Le polygone termine au centre
+      	Ajoute(stZone:Polygone, m_stCentreGraphe:x)
+      	Ajoute(stZone:Polygone, m_stCentreGraphe:y)
+      	
+     type : 458752
+   -
+     name : CalculeLongueurAxe
+     procedure_id : 1860871087247790177
+     type_code : 12
+     code : |1-
+      // Résumé : Calcule la longueur d'un axe
+      // Syntaxe :
+      //[ <Résultat> = ] CalculeLongueurAxe (<nX1> est entier, <nY1> est entier, <nX2> est entier, <nY2> est entier)
+      //
+      // Paramètres :
+      //	nX1 (entier) : Coordonnée X du point 1
+      //	nY1 (entier) : Coordonnée Y du point 1
+      //	nX2 (entier) : Coordonnée X du point 2
+      //	nY2 (entier) : Coordonnée Y du point 2
+      // Valeur de retour :
+      // 	réel : Longueur de l'axe [nX1,nY1]-[nX2,nY2]
+      //
+      Procédure privee CalculeLongueurAxe(local nX1 est un entier, local nY1 est un entier, local nX2 est un entier, local nY2 est un entier)
+      
+      	rLongueur est reel
+      	
+      	// Normalise les valeurs
+      	si nX1 > nX2 alors nX1 <=> nX2
+      	si nY1 > nY2 alors nY1 <=> nY2
+      	
+      	// Calcule la longueur de l'axe
+      	rLongueur = Racine((nY2 - nY1)^2 + (nX2 - nX1)^2)
+      	
+      renvoyer rLongueur
+     type : 458752
+   -
+     name : PointDansZone
+     internal_properties : CAAAAAgAAAASNOIYQg7FSDZPHKS8HKYj9Kj9PAfNIazJDB5jywXw7Ai5PS52tSsfN8kjvDlGtLZ1HJS5t7Bhu4p0Sx6Z/AyO4/GV7bBZRH3F2pSA4lEpzzFjOuqh6Ow4a1ypjvUc0U+cLhZMyBEEAFV8qaGUTuqmbgGmCRZHVy1DrKHmDSoP/4fmtQ0h9NkDPf7SSsSVNKxHC8qDsw==
+     procedure_id : 1860882288522616067
+     type_code : 12
+     code : |1-
+      // Résumé : Détermine si un point se trouve dans une zone
+      // Syntaxe :
+      //[ <Résultat> = ] PointDansZone (<nX> est entier, <nY> est entier, <tabPolygone> est tableau)
+      //
+      // Paramètres :
+      //	nX (entier) : Coordonnée X du point
+      //	nY (entier) : Coordonnée Y du point
+      //	tabPolygone (tableau) : Polygone de la zone
+      // Valeur de retour :
+      // 	booléen :   Vrai si le point se trouve dans la zone, Faux sinon
+      //
+      Procédure privee PointDansZone(local nX est un entier, local nY est un entier, tabPolygone est un tableau d'entiers)
+      	
+      	bPointDansZone 		est un booléen
+      	nDimension	   		est un entier = (tabPolygone..Occurrence / 2)
+      	tabPoints	   		est un tableau de nDimension Point
+      	rXIntersection  	est un reel
+      	nNbIntersect   		est un entier
+      	stPoint1, stPoint2 	sont des point
+      	
+      	// Transfert le polygone dans un tableau de POINT
+      	transfert(&tabPoints, &tabPolygone, dimension(stPoint1) * nDimension)
+      
+      	// Stocke le premier point
+      	stPoint1 = tabPoints[1]
+      	
+      	// Pour chaque point du polygone
+      	pour i = 1 _a_ nDimension
+      	
+      		// Stocke le point suivant	
+      		stPoint2 = tabPoints[modulo(i, nDimension) + 1]
+      		
+      		// Si Y[Souris] est strictement plus grand que le point le plus bas du segment [P1-P2]
+      		si nY > min(stPoint1:y,stPoint2:y) alors
+      			
+      			// Si Y[Souris] est inférieur ou égal au point le plus haut du segment [P1-P2]
+      			SI nY <= Max(stPoint1:y,stPoint2:y) ALORS
+      				
+      				// Si X[Souris] est inférieur ou égal au point le plus à droite du segment [P1-P2]
+      				SI nX <= Max(stPoint1:x,stPoint2:x) ALORS
+      					
+      					// Si le segment [P1-P2] n'est pas horizontal (ie. même ordonnée)
+      					si stPoint1:y <> stPoint2:y ALORS						
+      						
+      						// Calcule le point d'intersection sur [P1-P2] de la droite horizontale passant par Y[Souris]
+      						rXIntersection = (nY - stPoint1:y) * (stPoint2:x - stPoint1:x) / (stPoint2:y - stPoint1:y) + stPoint1:x
+      						
+      						// Si le segment [P1-P2] est vertical ou si X[Souris] est inférieur au point d'intersection
+      						si stPoint1:x = stPoint2:x ou nX < rXIntersection alors
+      							
+      							// Incrémente le nombre d'intersections
+      							nNbIntersect ++
+      						FIN						
+      					FIN
+      				fin
+      			fin
+      		FIN
+      		
+      		// Point suivant
+      		stPoint1 = stPoint2
+      	FIN
+      	
+      	// Si le nombre d'intersections est impaire, le point est dans la zone
+      	// Si le nombre d'intersections est pair, le point est en dehors de la zone
+      	bPointDansZone = EstImpair(nNbIntersect)
+      	
+      renvoyer bPointDansZone
+     type : 458752
+   -
+     name : DessinTracker
+     internal_properties : CAAAAAgAAAClROx+deka4V/yBQQntqblkSe4GH01C/93WDSbP4ZV91PD+zLUQYK7XKN0+DO4BX+cTTp6ZVGTZCBNcgnXyO69V3ZjbAeBtRKQpgTCZzxh2Y51OmrC/OukxZxKejtvGv/K8tGzX+IFk0cbpw1QelgJznTI4RlFRjQ3pKIqvlpRonNp7d8q5Mndn/RVaXxJerrVHmJp2qVm5w001nDdacgy4zaR27DjbJi4y6jxoRWzPmRgMtNflNUjzWgqeyFM1oKg4euSFFY28ks/QiD0YOinNoXpisdKZaWk8xSlmQd6mQ==
+     procedure_id : 1860900228601059384
+     type_code : 12
+     code : |1-
+      // Résumé : Dessine le tracker et les points traversant le tracker
+      // Syntaxe :
+      //DessinTracker (<rRayonTracker> est réel)
+      //
+      // Paramètres :
+      //	rRayonTracker (réel) : Rayon du tracker
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure privee DessinTracker(local rRayonTracker est un reel)
+      
+      	nCouleur	est un entier		= rougepastel || 0xFFFFFF
+      	stInfo		est un INFOPOINT
+      	stCercle	est un RECTANGLE
+      	rRayon		est un reel
+      
+      	// Passe en mode XOR
+      	dChangeMode(dessinXOR)
+      	
+      	// Si un tracker a été précédemment dessiné				
+      	SI m_stLastSerie:Numéro > 0 ALORS
+      	
+      		// Si le dessin des plots est actif
+      		SI DessinPlotActif ALORS
+      		
+      			SI DessinTrackerActif ALORS
+      				
+      				// Efface le tracker précédent
+      				dcercle(m_stLastSerie:PointMin:x, m_stLastSerie:PointMin:y, m_stLastSerie:PointMax:x, m_stLastSerie:PointMax:y, transparent, nCouleur)
+      			FIN
+      			
+      			pour chaque stInfo de m_stLastSérie:Points
+      				
+      				// Efface le plot
+      				dRectangle(stInfo:Point:x - 3, stInfo:Point:y - 3, stInfo:Point:x + 3, stInfo:Point:y + 3, m_tabSéries[stInfo:Série]:Couleur || 0xFFFFFF, m_tabSéries[stInfo:Série]:Couleur || 0xFFFFFF)			
+      			FIN
+      		fin
+      		
+      		// Ré-initialise le tracker
+      		VariableRAZ(m_stLastSerie)
+      	FIN
+      	
+      	// Détermine tous les points qui passent sur le cercle du tracker
+      	pour chaque stInfo de m_tabPoints
+      		
+      		rRayon = arrondi(CalculeLongueurAxe(m_stCentreGraphe:x, m_stCentreGraphe:y, stInfo:Point:x, stInfo:Point:y))
+      		
+      		si rRayonTracker = rRayon alors
+      		
+      			// Si le dessin des plots est actif
+      			SI DessinPlotActif ALORS
+      			
+      				// Dessin du plot
+      				dRectangle(stInfo:Point:x - 3, stInfo:Point:y - 3, stInfo:Point:x + 3, stInfo:Point:y + 3, m_tabSéries[stInfo:Série]:Couleur || 0xFFFFFF, m_tabSéries[stInfo:Série]:Couleur || 0xFFFFFF)
+      			fin
+      
+      			// Enregistre le plot
+      			ajoute(m_stLastSerie:Points, stInfo)
+      		fin		
+      	FIN
+      	
+      	// Trie les points par série
+      	TableauTrie(m_stLastSerie:Points, ttMembre, "Série")
+      	
+      	SI DessinTrackerActif _et_ m_stLastSerie:Points..occurrence > 0 ALORS
+      		
+      		// Coordonnées du rectangle inscrit dans le cercle
+      		stCercle:x1 = m_stCentreGraphe:x - rRayonTracker
+      		stCercle:x2 = m_stCentreGraphe:x + rRayonTracker
+      		stCercle:y1 = m_stCentreGraphe:y - rRayonTracker
+      		stCercle:y2 = m_stCentreGraphe:y + rRayonTracker
+      		
+      		// Dessin du tracker courant depuis le centre du graphe
+      		dCercle(stCercle:x1, stCercle:y1, stCercle:x2, stCercle:y2, Transparent, nCouleur)		
+      		
+      		// Conserve le point minimum
+      		m_stLastSerie:PointMin 	= [stCercle:x1, stCercle:y1]				
+      		m_stLastSerie:PointMax 	= [stCercle:x2, stCercle:y2]				
+      	FIN
+      	
+      	// Conserve l'information
+      	m_stLastSerie:Numéro 	= 1			
+      	
+      	// Restaure le mode de dessin
+      	dChangeMode(dessinNormal)	
+     type : 458752
+   -
+     name : ValeurMoyenne
+     procedure_id : 1860984882406774912
+     type_code : 12
+     code : |1-
+      // Résumé : Renvoie la valeur moyenne d'une série
+      // Syntaxe :
+      //[ <Résultat> = ] ValeurMoyenne (<nSérie> est entier)
+      //
+      // Paramètres :
+      //	nSérie (entier) : Numéro de la série
+      // Valeur de retour :
+      // 	réel : Valeur moyenne de la série ou -1 en cas d'erreur
+      //
+      Procédure ValeurMoyenne(local nSérie est un entier)
+      
+      	nIndice 	est un entier
+      	rMoyenne	est un reel
+      	
+      	// Recherche la série
+      	nIndice = cherche(m_tabSéries, tcLinéaire, "Numéro", nSérie)
+      	si nIndice > 0 ALORS
+      		
+      		// Récupère la valeur moyenne de la série
+      		rMoyenne = m_tabSéries[nIndice]:ValeurMoy		
+      	sinon
+      		rMoyenne = -1
+      	FIN
+      	
+      renvoyer rMoyenne
+     type : 458752
+   -
+     name : PolygoneZoneAjouteSommet
+     internal_properties : CAAAAAgAAABouuwGT5wd/kgDBPbqjFazAngvsFFbgWpLCB6l4X0YTNL1Y47Id+/Bmc3XRg+WVBYTfPoZ1aZxrbzIQ+wjwMjKWRk3Oe4TQFff7rt343Y6LJxMG/2e7WdHutt0Ta4JIpwbr9dLCZIDa8CngDA922enARKXJKuUGnDOl8QNbpfYvDKLsgxCNRjCvB2h3bEepXFVGdj1TQ==
+     procedure_id : 1861270544976272764
+     type_code : 12
+     code : |1-
+      // Résumé : Ajoute un somme à un polygone de zone
+      // Syntaxe :
+      //PolygoneZoneAjouteSommet (<stZone> est ZONE, <stInfoPoint> est INFOPOINT)
+      //
+      // Paramètres :
+      //	stZone (ZONE) : Zone à compléter
+      //	stInfoPoint (INFOPOINT) : Point à ajouter
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure privee PolygoneZoneAjouteSommet(stZone est une zone, stInfoPoint est un infopoint)
+      
+      	rX, rY sont des reels
+      
+      	// Cas particulier : droite verticale
+      	SI stInfoPoint:Point:x = m_stCentreGraphe:x ALORS
+      		
+      		// Projette le point sur la droite par rapport à la valeur max
+      		Ajoute(stZone:Polygone, stInfoPoint:Point:x)
+      		Ajoute(stZone:Polygone, m_stCentreGraphe:y + m_rRayonMax)	
+      	SINON
+      		
+      		// Calcule la projection de X sur la droite [CentreGraphe;Point] à la longueur <m_rRayonMax>
+      		// Formule :
+      		//                                           X[Point] - X[CentreGraphe]                         X[CentreGraphe]
+      		//   X = Longueur( ------------------------------------------------------------------------  + ----------------- )
+      		//				      RAC((Y[Point] - Y[CentreGraphe])² + (X[Point] - X[CentreGraphe])²)           Longueur
+      		//
+      		rX = m_rRayonMax * ((stInfoPoint:Point:x - m_stCentreGraphe:x) / Racine((stInfoPoint:Point:y - m_stCentreGraphe:y)^2 + (stInfoPoint:Point:x - m_stCentreGraphe:x)^2) + (m_stCentreGraphe:x / m_rRayonMax))
+      		
+      		// Calcule la projection de Y sur la droite [CentreGraphe;Point] à la longueur <m_rRayonMax>
+      		// Formule :
+      		//             Y[Point] - Y[CentreGraphe]                  Y[Point] - Y[CentreGraphe]
+      		//   Y = X * ( -------------------------- ) + Y[Point] - ( -------------------------- ) * X[Point]
+      		//             X[Point] - X[CentreGraphe]                  X[Point] - X[CentreGraphe]
+      		//
+      		rY = ((stInfoPoint:Point:y - m_stCentreGraphe:y) / (stInfoPoint:Point:x - m_stCentreGraphe:x)) * rX + stInfoPoint:Point:y - ((stInfoPoint:Point:y - m_stCentreGraphe:y) / (stInfoPoint:Point:x - m_stCentreGraphe:x)) * stInfoPoint:Point:x
+      		
+      		Ajoute(stZone:Polygone, rX)
+      		Ajoute(stZone:Polygone, rY)
+      	FIN
+     type : 458752
+   -
+     name : EffacePlots
+     internal_properties : CAAAAAgAAACU/w932xzElSUnM+AMTlcjIOFCWZQuSVNmQ6ctbyRuxeDj+bdLoa+iBk8wXqDyrKiwt01SFvQEdkkykLsg8/IBJ+yrgGcX3ZD7I/8NBSoP7EOiSwPcc7zkLlOxgPf6dFPgtn5Cu8CA5IElkCg44STe9tN47T+QX9Nlu3onVelhrpg7nOS1ZKE7SrgaiX2VWZ0atiuUK8lsRRASz8dFx13iljn6XxjUjfMJtiXLRKrfJTlDwh3fKQUZKu4T9ycZYw==
+     procedure_id : 1861279671782264034
+     type_code : 12
+     code : |1-
+      // Résumé : Efface les plots et le tracker précédent
+      // Syntaxe :
+      //EffacePlots ()
+      //
+      // Paramètres :
+      //	Aucun
+      // Valeur de retour :
+      // 	Aucune
+      //
+      Procédure PRIVEE EffacePlots()
+      
+      	nCouleur est un entier
+      
+      	SI m_tabLastPoints..Occurrence > 0 ALORS
+      		
+      		SI DessinPlotActif ALORS
+      		
+      			// Pour chaque points
+      			POUR i = 1 _A_ m_tabLastPoints..Occurrence
+      				
+      				nCouleur = m_tabLastPoints[i]:Couleur
+      				nCouleur = nCouleur || 0xFFFFFF
+      				
+      				// Efface le plot précédent
+      				dRectangle(m_tabLastPoints[i]:Point:x - 3, m_tabLastPoints[i]:Point:y - 3, m_tabLastPoints[i]:Point:x + 3, m_tabLastPoints[i]:Point:y + 3, nCouleur, nCouleur)
+      				
+      			FIN	
+      		fin
+      		
+      		// Vide la liste des points
+      		SupprimeTout(m_tabLastPoints)	
+      	FIN
+      	
+      	// Si un tracker a été précédemment dessiné				
+      	SI m_stLastTracker:Clé <> "" ALORS
+      		
+      		// Récupère la couleur et l'inverse
+      		nCouleur = m_stLastTracker:Couleur
+      		nCouleur = nCouleur || 0xFFFFFF
+      		
+      		SI DessinTrackerActif ALORS
+      			
+      			// Efface le tracker précédent
+      			dLigne(m_stLastTracker:Point:x, m_stLastTracker:Point:y, m_stLastTracker:Point:x, m_stRectangleGraphe:y2, nCouleur, m_stLastTracker:Epaisseur)
+      		FIN
+      		
+      		// Ré-initialise le tracker
+      		VariableRAZ(m_stLastTracker)
+      	FIN
+     type : 458752
+  properties :
+   -
+     name : DessinMinMaxActif
+     identifier : 0x19d0de4b00118c5b
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure DessinMinMaxActif()
+         renvoyer m_bMinMaxActif
+        type : 1966080
+      -
+        code : |1-
+         Procédure DessinMinMaxActif(local bMinMaxActif est un booléen)
+         
+         	// Conserve la nouvelle valeur
+         	m_bMinMaxActif = bMinMaxActif	
+        type : 2031616
+     template_refs : []
+   -
+     name : StyleMinMax
+     identifier : 0x19d0eb3900240d5d
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure StyleMinMax()
+         renvoyer m_nStyleMinMax
+        type : 1966080
+      -
+        code : |1-
+         Procédure StyleMinMax(local nStyleMinMax est un entier)
+         
+         	si nStyleMinMax dans (MINMAX_LIGNES, MINMAX_ZONES) ALORS
+         		
+         		// Conserve la nouvelle valeur
+         		m_nStyleMinMax = nStyleMinMax
+         	FIN
+        type : 2031616
+     template_refs : []
+   -
+     name : DessinPlotActif
+     identifier : 0x19d1ca6e001cae2a
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure DessinPlotActif()
+         renvoyer m_bPlotActif
+        type : 1966080
+      -
+        code : |1-
+         Procédure DessinPlotActif(local bPlotActif est un booléen)
+         
+         	// Conserve la nouvelle valeur
+         	m_bPlotActif = bPlotActif
+        type : 2031616
+     template_refs : []
+   -
+     name : DessinTrackerActif
+     identifier : 0x19d1e0cd001e0f4e
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure DessinTrackerActif()
+         renvoyer m_bTrackerActif
+        type : 1966080
+      -
+        code : |1-
+         Procédure DessinTrackerActif(local bTrackerActif est un booléen)
+         
+         	// Conserve la nouvelle valeur
+         	m_bTrackerActif = bTrackerActif
+        type : 2031616
+     template_refs : []
+   -
+     name : CallbackDrapeau
+     identifier : 0x19d1e1f000208059
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure CallbackDrapeau()
+         renvoyer m_sCallbackDrapeau
+        type : 1966080
+      -
+        code : |1-
+         Procédure CallbackDrapeau(local sCallbackDrapeau est une chaine)
+         
+         	// Conserve la nouvelle valeur
+         	m_sCallbackDrapeau = sCallbackDrapeau
+        type : 2031616
+     template_refs : []
+   -
+     name : CallbackSurvol
+     identifier : 0x19d1e2b000216f97
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure CallbackSurvol()
+         renvoyer m_sCallbackSurvol
+        type : 1966080
+      -
+        code : |1-
+         Procédure CallbackSurvol(local sCallbackSurvol est une chaine)
+         
+         	// Conserve la nouvelle valeur
+         	m_sCallbackSurvol = sCallbackSurvol
+        type : 2031616
+     template_refs : []
+   -
+     name : CallbackZone
+     identifier : 0x19d1e9680043afe1
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure CallbackZone()
+         renvoyer m_sCallbackZone
+        type : 1966080
+      -
+        code : |1-
+         Procédure CallbackZone(local sCallbackZone est une chaine)
+         
+         	// Conserve la nouvelle valeur
+         	m_sCallbackZone = sCallbackZone
+        type : 2031616
+     template_refs : []
+   -
+     name : DessinMoyenneActif
+     identifier : 0x19d3835f00390ea4
+     type_code : 103
+     p_codes :
+      -
+        code : |1-
+         Procédure DessinMoyenneActif()
+         renvoyer m_bMoyenneActif
+        type : 1966080
+      -
+        code : |1-
+         Procédure DessinMoyenneActif(local bMoyenneActif est un booléen)
+         
+         	// Conserve la nouvelle valeur
+         	m_bMoyenneActif = bMoyenneActif
+        type : 2031616
+     template_refs : []
+  procedure_templates : []
+  property_templates : []
+ code_parameters :
+  internal_properties : CAAAAAgAAACVGQgYbalU7DKC3oH4ItDrjtcTHXXV/EuH8q0IbhyQlw==
+  original_name : CClasse1
+resources :
+ string_res :
+  identifier : 0x1fc4ce7608057058
+  internal_properties : CAAAAAgAAACm76HWfKGWp33VjXInA4cRlqArlgTTA862QGt72W2ld5Y=
+custom_note :
+ internal_properties : CAAAAAgAAABtB9HWVzrXO2+4NDRVK0vmzaNKrCKqH1DBX30lMmGZ
